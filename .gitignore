@@ -1,0 +1,10 @@
+# large model fetched by scripts/fetch_models.sh
+models/depth_anything_v2_vits_dynamic.onnx
+models/*.pt
+viewer/node_modules/
+viewer/app.bundle.js
+__pycache__/
+*.pyc
+converted/
+site/
+.DS_Store
