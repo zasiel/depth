@@ -3,7 +3,6 @@ package com.cyote3d.app
 import android.os.Bundle
 import android.util.Log
 import androidx.compose.ui.platform.ComposeView
-import androidx.lifecycle.lifecycleScope
 import com.cyote3d.app.ui.LibraryPanel
 import com.cyote3d.app.ui.ViewerBar
 import com.cyote3d.app.viewer.PhotoBuilder
@@ -25,8 +24,11 @@ import com.meta.spatial.toolkit.QuadShapeOptions
 import com.meta.spatial.toolkit.Transform
 import com.meta.spatial.toolkit.UIPanelSettings
 import com.meta.spatial.vr.VRFeature
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -52,6 +54,7 @@ class Cyote3DActivity : AppSystemActivity() {
   private var libraryEntity: Entity? = null
   private var barEntity: Entity? = null
   private var loadJob: Job? = null
+  private val activityScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
   override fun registerFeatures(): List<SpatialFeature> = listOf(VRFeature(this), ComposeFeature())
 
@@ -71,6 +74,11 @@ class Cyote3DActivity : AppSystemActivity() {
     scene.setReferenceSpace(ReferenceSpace.LOCAL_FLOOR)
     scene.setViewOrigin(0f, 0f, 0f, 0f)
     showLibrary()
+  }
+
+  override fun onDestroy() {
+    activityScope.cancel()
+    super.onDestroy()
   }
 
   override fun onSceneTick() {
@@ -105,7 +113,7 @@ class Cyote3DActivity : AppSystemActivity() {
     AppState.loading = true
     loadJob?.cancel()
     loadJob =
-        lifecycleScope.launch {
+        activityScope.launch {
           try {
             val built =
                 withContext(Dispatchers.Default) {
