@@ -1,0 +1,57 @@
+package: name='com.cyote3d.app' versionCode='1' versionName='0.1.0-m0' platformBuildVersionName='14' platformBuildVersionCode='34' compileSdkVersion='34' compileSdkVersionCodename='14'
+install-location:'auto'
+sdkVersion:'34'
+targetSdkVersion:'34'
+uses-permission: name='com.oculus.permission.HAND_TRACKING'
+uses-permission: name='com.oculus.permission.RENDER_MODEL'
+uses-permission: name='com.cyote3d.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+application-label:'Cyote3D'
+application-label-af:'Cyote3D'
+application-label-am:'Cyote3D'
+application-label-ar:'Cyote3D'
+application-label-as:'Cyote3D'
+application-label-az:'Cyote3D'
+application-label-be:'Cyote3D'
+application-label-bg:'Cyote3D'
+application-label-bn:'Cyote3D'
+application-label-bs:'Cyote3D'
+application-label-ca:'Cyote3D'
+application-label-cs:'Cyote3D'
+application-label-da:'Cyote3D'
+application-label-de:'Cyote3D'
+application-label-el:'Cyote3D'
+application-label-en-AU:'Cyote3D'
+application-label-en-CA:'Cyote3D'
+application-label-en-GB:'Cyote3D'
+--- contents (shaders, samples, libs) ---
+   935328  1981-01-01 01:01   lib/arm64-v8a/libAetherGlobals.so
+ 45966856  1981-01-01 01:01   lib/arm64-v8a/libMetaSpatialSDK.so
+  3745952  1981-01-01 01:01   lib/arm64-v8a/libMetaSpatialSDKIsdk.so
+  3326096  1981-01-01 01:01   lib/arm64-v8a/libMetaSpatialSDK_1.so
+    10096  1981-01-01 01:01   lib/arm64-v8a/libandroidx.graphics.path.so
+   557696  1981-01-01 01:01   lib/arm64-v8a/libopenxr_loader.so
+    92848  1981-01-01 01:01   lib/arm64-v8a/libthird-party_zlib_1_3_1_z.so
+     7252  1981-01-01 01:01   lib/armeabi-v7a/libandroidx.graphics.path.so
+     9284  1981-01-01 01:01   lib/x86/libandroidx.graphics.path.so
+    10760  1981-01-01 01:01   lib/x86_64/libandroidx.graphics.path.so
+    11248  1981-01-01 01:01   assets/meta/renderer_module/shaders/primdrawer.shader/shader
+ 99092268  1981-01-01 01:01   assets/models/depth_anything_v2_vits_dynamic.onnx
+ 26639447  1981-01-01 01:01   assets/models/migan.onnx
+      277  1981-01-01 01:01   assets/photo_bg.frag.spv
+     1304  1981-01-01 01:01   assets/photo_bg.vert.2uv.mv.spv
+     1293  1981-01-01 01:01   assets/photo_bg.vert.2uv.spv
+     1311  1981-01-01 01:01   assets/photo_bg.vert.mv.spv
+     1308  1981-01-01 01:01   assets/photo_bg.vert.skin.mv.spv
+     1290  1981-01-01 01:01   assets/photo_bg.vert.skin.spv
+     1296  1981-01-01 01:01   assets/photo_bg.vert.spv
+     1305  1981-01-01 01:01   assets/photo_bg.vert.tangent.mv.spv
+     1292  1981-01-01 01:01   assets/photo_bg.vert.tangent.spv
+      566  1981-01-01 01:01   assets/photo_fg.frag.spv
+     1466  1981-01-01 01:01   assets/samples/balcony/ambient.jpg
+   533467  1981-01-01 01:01   assets/samples/balcony/bg.jpg
+  2747976  1981-01-01 01:01   assets/samples/balcony/bg_depth.png
+   604965  1981-01-01 01:01   assets/samples/balcony/fg.jpg
+  2708107  1981-01-01 01:01   assets/samples/balcony/fg_depth.png
+   550450  1981-01-01 01:01   assets/samples/balcony/orig.jpg
+    22987  1981-01-01 01:01   assets/samples/balcony/thumb.jpg
+     1292  1981-01-01 01:01   assets/samples/manifest.json
