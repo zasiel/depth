@@ -24,14 +24,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - uses: android-actions/setup-android@v3
-
       - name: Install SDK platform and NDK (custom shaders need glslc from the NDK)
         run: |
           mkdir -p logs
-          yes | sdkmanager --licenses > /dev/null || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;27.0.12077973" > logs/sdkmanager.txt 2>&1
-          tail -n 3 logs/sdkmanager.txt
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKM" --licenses > /dev/null || true
+          "$SDKM" "platforms;android-34" "build-tools;34.0.0" "ndk;27.0.12077973" > logs/sdkmanager.txt 2>&1
+          tail -c 300 logs/sdkmanager.txt
 
       - uses: gradle/actions/setup-gradle@v4
 
@@ -64,6 +63,7 @@ jobs:
         if: always() && startsWith(github.ref, 'refs/heads/ci/')
         continue-on-error: true
         run: |
+          mkdir -p logs
           echo "run ${{ github.run_id }} ${{ job.status }} $(date -u) sha ${{ github.sha }}" > logs/STATUS.txt
           tail -n 400 logs/gradle.txt > logs/gradle-tail.txt 2>/dev/null || true
           grep -E "^e: |error:|FAILED|What went wrong" -A4 logs/gradle.txt > logs/errors.txt 2>/dev/null || true
