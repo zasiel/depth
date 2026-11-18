@@ -97,3 +97,9 @@ Deliberately **not** used: Apple SHARP and Depth Pro (research-only licenses), a
 - **Fill quality** is MI-GAN level: good for short strips, blotchy for very wide ones. LaMa (Apache-2.0) is an optional higher-quality pass (weights on IOPaint's GitHub releases; ONNX export needs opset ≥17 for FFT).
 - **Leaning past about 15 cm** at 1.7 m goes beyond what the fill was sized for. Raise `max_eye` in `layers.py` and `cut_mask()` together to trade compute for freedom.
 - **Quest native app:** port `depth.py`, `layers.py` and `inpaint.py` to Kotlin with ONNX Runtime Android or LiteRT (GPU delegate). Reuse this exact shader in a Spatial SDK or Unity mesh. All of the math is image-processing that ports 1:1 (morphology, blur, distance transform).
+
+## Quest app (Cyote3D)
+
+`app/` is the native Meta Spatial SDK app (see `BUILD_PLAN.md`). Milestone 0 shows the bundled sample photos in a Library panel and opens one in a 3D window rendered by custom shaders (`app/src/shaders/`, a port of the viewer's projection and tear-cut maths).
+
+There is no local toolchain requirement: GitHub Actions builds it. Open **Actions → android → latest run → Artifacts → Cyote3D-debug.apk**, then `adb install -r Cyote3D-debug.apk` (or drag it into SideQuest; Developer mode must be on). To build locally, run `bash scripts/prepare_assets.sh` once and then `./gradlew assembleDebug` (needs JDK 17, Android SDK 34 and NDK 27.0.12077973).

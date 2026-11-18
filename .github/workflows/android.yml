@@ -1,0 +1,75 @@
+name: android
+
+on:
+  push:
+    branches: [main, 'ci/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write # only used by the ci-logs publishing step below
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install SDK platform and NDK (custom shaders need glslc from the NDK)
+        run: |
+          mkdir -p logs
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;27.0.12077973" > logs/sdkmanager.txt 2>&1
+          tail -n 3 logs/sdkmanager.txt
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Fetch models and stage bundled assets
+        run: bash scripts/prepare_assets.sh
+
+      - name: Build debug APK
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee logs/gradle.txt
+
+      - name: Name and inspect the APK
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk Cyote3D-debug.apk
+          ls -la Cyote3D-debug.apk
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/34.0.0)
+          {
+            "$BT/aapt2" dump badging Cyote3D-debug.apk | head -n 25
+            echo "--- contents (shaders, samples, libs) ---"
+            unzip -l Cyote3D-debug.apk | grep -E "shaders|\.spv|assets/samples/(manifest|balcony)|assets/models|lib/" | head -n 60
+          } | tee logs/apk.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Cyote3D-debug.apk
+          path: Cyote3D-debug.apk
+          if-no-files-found: error
+
+      - name: Publish logs to ci-logs branch
+        if: always() && startsWith(github.ref, 'refs/heads/ci/')
+        continue-on-error: true
+        run: |
+          echo "run ${{ github.run_id }} ${{ job.status }} $(date -u) sha ${{ github.sha }}" > logs/STATUS.txt
+          tail -n 400 logs/gradle.txt > logs/gradle-tail.txt 2>/dev/null || true
+          grep -E "^e: |error:|FAILED|What went wrong" -A4 logs/gradle.txt > logs/errors.txt 2>/dev/null || true
+          rm -rf /tmp/pub && mkdir /tmp/pub
+          cp logs/STATUS.txt logs/errors.txt logs/gradle-tail.txt logs/apk.txt logs/sdkmanager.txt /tmp/pub/ 2>/dev/null || true
+          cd /tmp/pub && git init -q -b ci-logs && git config user.name ci && git config user.email ci@users.noreply.github.com
+          git add -A && git commit -qm "logs ${{ github.run_id }}"
+          git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          git push -f origin ci-logs
